@@ -7,7 +7,7 @@ import {
   LayoutDashboard,
   Users,
   ClipboardList,
-  Edit3, // Changed from Camera to Edit3 for Manual Attendance
+  Edit3, 
   ShieldCheck,
   ScanFace,
   LogOut,
@@ -30,7 +30,7 @@ import { useRouter } from 'next/navigation';
 
 const navItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/attendance', label: 'Manual Attendance', icon: Edit3 }, // Updated label and icon
+  { href: '/admin/attendance', label: 'Manual Attendance', icon: Edit3 },
   { href: '/admin/employees', label: 'Employees', icon: Users },
   { href: '/admin/logs', label: 'Attendance Logs', icon: ClipboardList },
   { href: '/admin/face-validator', label: 'Face Validator', icon: ShieldCheck },
@@ -44,7 +44,7 @@ export function SidebarNav() {
 
   const handleSignOut = async () => {
     await signOut();
-    router.push('/login'); // Redirect to public login page
+    router.push('/login'); 
   };
 
   return (
@@ -69,15 +69,12 @@ export function SidebarNav() {
             <SidebarMenuItem key={item.href}>
               <Link href={item.href}>
                 <SidebarMenuButton
-                  asChild
                   isActive={pathname === item.href || (item.href !== "/admin/dashboard" && pathname.startsWith(item.href))}
                   tooltip={item.label}
                   className="justify-start"
                 >
-                  <a>
-                    <item.icon className="h-5 w-5" />
-                    {state === "expanded" && <span>{item.label}</span>}
-                  </a>
+                  <item.icon className="h-5 w-5" />
+                  {state === "expanded" && <span>{item.label}</span>}
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
@@ -93,4 +90,3 @@ export function SidebarNav() {
     </Sidebar>
   );
 }
-
