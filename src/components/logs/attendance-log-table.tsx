@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo } from 'react';
@@ -13,12 +14,13 @@ import { format, parseISO } from 'date-fns';
 import { ArrowUpDown, Filter, ExternalLink } from 'lucide-react';
 
 type SortKey = keyof AttendanceRecord | '';
+const ALL_EMPLOYEES_VALUE = "__ALL__";
 
 export function AttendanceLogTable() {
   const { attendanceRecords, employees, isLoading } = useData();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDate, setFilterDate] = useState('');
-  const [filterEmployee, setFilterEmployee] = useState('');
+  const [filterEmployee, setFilterEmployee] = useState(''); // Initial value is empty string, placeholder will show
   const [sortKey, setSortKey] = useState<SortKey>('date');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
@@ -36,7 +38,7 @@ export function AttendanceLogTable() {
       records = records.filter(record => record.date === filterDate);
     }
 
-    if (filterEmployee) {
+    if (filterEmployee && filterEmployee !== ALL_EMPLOYEES_VALUE) {
       records = records.filter(record => record.employeeId === filterEmployee);
     }
 
@@ -48,7 +50,7 @@ export function AttendanceLogTable() {
         if (sortKey === 'checkInTime' || sortKey === 'checkOutTime' || sortKey === 'date') {
           valA = valA ? parseISO(valA as string).getTime() : 0;
           valB = valB ? parseISO(valB as string).getTime() : 0;
-          if (sortKey === 'date' && valA === 0 && a.checkInTime) valA = parseISO(a.checkInTime).getTime(); // Sort by checkInTime if date is primary sort
+          if (sortKey === 'date' && valA === 0 && a.checkInTime) valA = parseISO(a.checkInTime).getTime();
           if (sortKey === 'date' && valB === 0 && b.checkInTime) valB = parseISO(b.checkInTime).getTime();
         }
         
@@ -120,7 +122,7 @@ export function AttendanceLogTable() {
                     <SelectValue placeholder="Filter by Employee" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="">All Employees</SelectItem>
+                    <SelectItem value={ALL_EMPLOYEES_VALUE}>All Employees</SelectItem>
                     {employees.map(emp => (
                         <SelectItem key={emp.id} value={emp.id}>{emp.name} ({emp.employeeId})</SelectItem>
                     ))}
@@ -183,3 +185,4 @@ export function AttendanceLogTable() {
     </Card>
   );
 }
+
