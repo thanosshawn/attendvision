@@ -1,27 +1,32 @@
+
 "use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/auth-context';
+import { CameraView } from '@/components/attendance/camera-view';
+import { ScanFace } from 'lucide-react';
+import Link from 'next/link';
 
 export default function HomePage() {
-  const { user, loading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading) {
-      if (user) {
-        router.replace('/dashboard');
-      } else {
-        router.replace('/login');
-      }
-    }
-  }, [user, loading, router]);
-
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-      <p className="ml-4 text-lg text-muted-foreground">Loading AttendVision...</p>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4">
+      <div className="mb-8 flex flex-col items-center text-center">
+        <ScanFace className="h-20 w-20 text-primary mb-4" />
+        <h1 className="text-4xl font-bold text-primary font-headline">AttendVision</h1>
+        <p className="text-muted-foreground mt-2 text-lg">
+          Face Recognition Attendance System
+        </p>
+        <p className="text-sm text-muted-foreground mt-1">
+          Please look at the camera to check in or out.
+        </p>
+      </div>
+      <div className="w-full max-w-2xl">
+        <CameraView />
+      </div>
+      <footer className="mt-8 text-center text-sm text-muted-foreground">
+        <p>&copy; {new Date().getFullYear()} AttendVision. All rights reserved.</p>
+        <Link href="/login" className="hover:text-primary underline">
+            Admin Login
+        </Link>
+      </footer>
     </div>
   );
 }

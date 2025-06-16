@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -46,7 +47,7 @@ export function SignupForm() {
     setIsLoading(true);
     try {
       await signUp(data.email, data.password);
-      router.push('/dashboard');
+      router.push('/admin/dashboard'); // Updated redirect
       toast({ title: "Signup Successful", description: "Your account has been created." });
     } catch (error: any) {
       toast({
@@ -62,8 +63,8 @@ export function SignupForm() {
   return (
     <Card className="w-full shadow-xl">
       <CardHeader>
-        <CardTitle className="text-2xl font-headline">Create Account</CardTitle>
-        <CardDescription>Enter your details to create a new account.</CardDescription>
+        <CardTitle className="text-2xl font-headline">Create Admin Account</CardTitle>
+        <CardDescription>Enter your details to create a new administrator account.</CardDescription>
       </CardHeader>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <CardContent className="space-y-4">
@@ -137,7 +138,7 @@ export function SignupForm() {
             Sign Up
           </Button>
           <p className="text-sm text-muted-foreground">
-            Already have an account?{' '}
+            Already have an admin account?{' '}
             <Link href="/login" className="font-medium text-primary hover:underline">
               Log in
             </Link>

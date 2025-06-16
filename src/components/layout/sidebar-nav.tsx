@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -6,12 +7,11 @@ import {
   LayoutDashboard,
   Users,
   ClipboardList,
-  Camera,
+  Edit3, // Changed from Camera to Edit3 for Manual Attendance
   ShieldCheck,
   ScanFace,
   LogOut,
-  ChevronsLeft,
-  ChevronsRight
+  ChevronsLeft
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -29,28 +29,28 @@ import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
 
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/attendance', label: 'Attendance', icon: Camera },
-  { href: '/employees', label: 'Employees', icon: Users },
-  { href: '/logs', label: 'Attendance Logs', icon: ClipboardList },
-  { href: '/face-validator', label: 'Face Validator', icon: ShieldCheck },
+  { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/attendance', label: 'Manual Attendance', icon: Edit3 }, // Updated label and icon
+  { href: '/admin/employees', label: 'Employees', icon: Users },
+  { href: '/admin/logs', label: 'Attendance Logs', icon: ClipboardList },
+  { href: '/admin/face-validator', label: 'Face Validator', icon: ShieldCheck },
 ];
 
 export function SidebarNav() {
   const pathname = usePathname();
-  const { state, toggleSidebar, open } = useSidebar();
+  const { state, toggleSidebar } = useSidebar();
   const { signOut } = useAuth();
   const router = useRouter();
 
   const handleSignOut = async () => {
     await signOut();
-    router.push('/login');
+    router.push('/login'); // Redirect to public login page
   };
 
   return (
     <Sidebar collapsible="icon" side="left" variant="sidebar">
       <SidebarHeader className="flex items-center justify-between p-3 border-b">
-        <Link href="/dashboard" className={cn(
+        <Link href="/admin/dashboard" className={cn(
             "flex items-center gap-2 font-semibold",
             state === "collapsed" && "justify-center"
         )}>
@@ -70,7 +70,7 @@ export function SidebarNav() {
               <Link href={item.href} legacyBehavior passHref>
                 <SidebarMenuButton
                   asChild
-                  isActive={pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href))}
+                  isActive={pathname === item.href || (item.href !== "/admin/dashboard" && pathname.startsWith(item.href))}
                   tooltip={item.label}
                   className="justify-start"
                 >

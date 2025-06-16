@@ -41,7 +41,7 @@ export function LoginForm() {
     setIsLoading(true);
     try {
       await signIn(data.email, data.password);
-      router.push('/dashboard');
+      router.push('/admin/dashboard'); // Updated redirect
       toast({ title: "Login Successful", description: "Welcome back!" });
     } catch (error: any) {
       toast({
@@ -58,7 +58,7 @@ export function LoginForm() {
     <Card className="w-full shadow-xl">
       <CardHeader>
         <CardTitle className="text-2xl font-headline">Admin Login</CardTitle>
-        <CardDescription>Administrator login to manage the attendance system. Employee attendance is recorded via face recognition.</CardDescription>
+        <CardDescription>Log in to access the AttendVision administrative dashboard.</CardDescription>
       </CardHeader>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <CardContent className="space-y-4">
@@ -107,7 +107,7 @@ export function LoginForm() {
             Login
           </Button>
           <p className="text-sm text-muted-foreground">
-            Don&apos;t have an account?{' '}
+            Need an admin account?{' '}
             <Link href="/signup" className="font-medium text-primary hover:underline">
               Sign up
             </Link>

@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -23,16 +24,16 @@ export function AppHeader() {
 
   const handleSignOut = async () => {
     await signOut();
-    router.push('/login');
+    router.push('/login'); // Redirect to public login page
   };
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-md md:px-6">
       {isMobile && <SidebarTrigger />}
       {!isMobile && (
-         <Link href="/dashboard" className="flex items-center gap-2 text-lg font-semibold md:text-base" aria-label="AttendVision Home">
+         <Link href="/admin/dashboard" className="flex items-center gap-2 text-lg font-semibold md:text-base" aria-label="AttendVision Admin Home">
             <ScanFace className="h-7 w-7 text-primary" />
-            <span className="sr-only">AttendVision</span>
+            <span className="sr-only">AttendVision Admin</span>
          </Link>
       )}
       <div className="flex w-full items-center justify-end gap-4">
@@ -55,7 +56,7 @@ export function AppHeader() {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={() => router.push('/dashboard')}>
+              <DropdownMenuItem onSelect={() => router.push('/admin/dashboard')}>
                 <LayoutDashboard className="mr-2 h-4 w-4" />
                 <span>Dashboard</span>
               </DropdownMenuItem>
