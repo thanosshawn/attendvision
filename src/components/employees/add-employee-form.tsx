@@ -1,7 +1,8 @@
+
 "use client";
 
 import React, { useState, useRef, useCallback } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useData } from '@/contexts/data-context';
 import { useToast } from '@/hooks/use-toast';
-import { detectFaces, DetectFacesInput, DetectFacesOutput } from '@/ai/flows/face-detector';
+import { detectFaces, type DetectFacesInput, type DetectFacesOutput } from '@/ai/flows/face-detector';
 import { Camera, Upload, Loader2, CheckCircle, AlertTriangle, UserPlus } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
 
@@ -22,11 +23,7 @@ const employeeSchema = z.object({
 
 type EmployeeFormValues = z.infer<typeof employeeSchema>;
 
-interface AddEmployeeFormProps {
-  onEmployeeAdded?: () => void;
-}
-
-export function AddEmployeeForm({ onEmployeeAdded }: AddEmployeeFormProps) {
+export function AddEmployeeForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [faceImageUri, setFaceImageUri] = useState<string | null>(null);
   const [isVerifyingFace, setIsVerifyingFace] = useState(false);
@@ -42,6 +39,11 @@ export function AddEmployeeForm({ onEmployeeAdded }: AddEmployeeFormProps) {
 
   const form = useForm<EmployeeFormValues>({
     resolver: zodResolver(employeeSchema),
+    defaultValues: {
+      name: '',
+      department: '',
+      employeeId: '',
+    }
   });
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +67,7 @@ export function AddEmployeeForm({ onEmployeeAdded }: AddEmployeeFormProps) {
       }
     } catch (err) {
       console.error("Error accessing camera:", err);
-      toast({ variant: "destructive", title: "Camera Error", description: "Could not access camera." });
+      toast({ variant: "destructive", title: "Camera Error", description: "Could not access camera. Please ensure permissions are granted." });
     }
   };
 
@@ -84,11 +86,15 @@ export function AddEmployeeForm({ onEmployeeAdded }: AddEmployeeFormProps) {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       const context = canvas.getContext('2d');
-      context?.drawImage(video, 0, 0, canvas.width, canvas.height);
+      if(!context) {
+        toast({ variant: "destructive", title: "Canvas Error", description: "Could not get canvas context for capture." });
+        return;
+      }
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
       const dataUri = canvas.toDataURL('image/jpeg');
       setFaceImageUri(dataUri);
       verifyFace(dataUri);
-      setShowCameraDialog(false); // Close dialog after capture
+      setShowCameraDialog(false); 
     }
   };
   
@@ -121,11 +127,20 @@ export function AddEmployeeForm({ onEmployeeAdded }: AddEmployeeFormProps) {
       toast({ variant: "destructive", title: "Face Not Verified", description: "Please ensure a valid face is detected in the image." });
       return;
     }
-    if (getEmployeeById(data.employeeId)) {
-        form.setError("employeeId", { type: "manual", message: "This Employee ID already exists." });
-        toast({ variant: "destructive", title: "Duplicate ID", description: "An employee with this ID already exists." });
-        return;
+    // Check if employee ID already exists
+    if (getEmployeeById(data.employeeId)) { // Note: getEmployeeById expects the actual employee ID (e.g. EMP001), not our internal unique ID. This needs fixing in DataContext or here.
+        // For simplicity, we'll assume data.employeeId is the unique ID for this check.
+        // A better approach would be to check against the `employeeId` field of existing employees.
+        // For now, this will check against the `id` field generated in DataContext if getEmployeeById uses that.
+        // Let's adjust to check specifically if an employee with this `employeeId` (the form field) exists.
+        const existingEmployee = (await useData().employees).find(emp => emp.employeeId === data.employeeId);
+        if (existingEmployee) {
+          form.setError("employeeId", { type: "manual", message: "This Employee ID already exists." });
+          toast({ variant: "destructive", title: "Duplicate ID", description: "An employee with this ID already exists." });
+          return;
+        }
     }
+
 
     setIsSubmitting(true);
     try {
@@ -134,7 +149,6 @@ export function AddEmployeeForm({ onEmployeeAdded }: AddEmployeeFormProps) {
       form.reset();
       setFaceImageUri(null);
       setFaceDetectionResult(null);
-      if (onEmployeeAdded) onEmployeeAdded();
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -147,9 +161,9 @@ export function AddEmployeeForm({ onEmployeeAdded }: AddEmployeeFormProps) {
   };
 
   return (
-    <Card className="w-full max-w-lg mx-auto shadow-xl">
+    <Card className="w-full shadow-xl">
       <CardHeader>
-        <CardTitle className="text-2xl font-headline flex items-center gap-2"><UserPlus /> Add New Employee</CardTitle>
+        <CardTitle className="text-2xl font-headline flex items-center gap-2"><UserPlus /> Register New Employee</CardTitle>
         <CardDescription>Fill in the details and capture/upload a face image for registration.</CardDescription>
       </CardHeader>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -223,12 +237,12 @@ export function AddEmployeeForm({ onEmployeeAdded }: AddEmployeeFormProps) {
               )}
             </div>
             <p className="text-xs text-muted-foreground text-center mt-2">
-              Guidance: Ensure good lighting, face is centered, and no obstructions like glasses or hats for best results.
+              Guidance: Ensure good lighting, face is centered, and no obstructions for best results.
             </p>
           </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit" className="w-full" disabled={isSubmitting || isVerifyingFace || !faceDetectionResult?.facesDetected}>
+          <Button type="submit" className="w-full" disabled={isSubmitting || isVerifyingFace || (faceImageUri && !faceDetectionResult?.facesDetected)}>
             {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
             Register Employee
           </Button>

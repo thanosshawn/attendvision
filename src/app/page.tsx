@@ -1,12 +1,14 @@
+
 "use client";
 
 import { CameraView } from '@/components/attendance/camera-view';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { ScanFace } from 'lucide-react';
+import Link from 'next/link';
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 relative">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-6 relative">
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
@@ -25,6 +27,11 @@ export default function HomePage() {
       </div>
       <footer className="mt-6 sm:mt-8 text-center text-xs sm:text-sm text-muted-foreground">
         <p>&copy; {new Date().getFullYear()} AttendVision. All rights reserved.</p>
+        <p className="mt-1">
+          <Link href="/register" className="hover:underline text-primary">
+            Register New Employee
+          </Link>
+        </p>
       </footer>
     </div>
   );
