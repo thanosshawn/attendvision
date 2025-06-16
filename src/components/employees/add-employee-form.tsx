@@ -175,13 +175,13 @@ export function AddEmployeeForm({ onEmployeeAdded }: AddEmployeeFormProps) {
             <Label>Face Image</Label>
             <div className="flex flex-col items-center gap-4 p-4 border-2 border-dashed rounded-md">
               {faceImageUri ? (
-                <img src={faceImageUri} alt="Captured face" data-ai-hint="person face" className="w-40 h-40 object-cover rounded-md" />
+                <img src={faceImageUri} alt="Captured face" data-ai-hint="person face" className="w-32 h-32 sm:w-40 sm:h-40 object-cover rounded-md" />
               ) : (
-                <div className="w-40 h-40 bg-muted rounded-md flex items-center justify-center">
-                  <Camera className="w-16 h-16 text-muted-foreground" />
+                <div className="w-32 h-32 sm:w-40 sm:h-40 bg-muted rounded-md flex items-center justify-center">
+                  <Camera className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground" />
                 </div>
               )}
-              <div className="flex gap-2">
+              <div className="flex flex-wrap justify-center gap-2">
                 <Dialog open={showCameraDialog} onOpenChange={(isOpen) => {
                   setShowCameraDialog(isOpen);
                   if (isOpen) startCamera(); else stopCamera();

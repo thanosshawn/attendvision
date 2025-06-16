@@ -18,7 +18,7 @@ export default function HomePage() {
           Please look at the camera to check in or out.
         </p>
       </div>
-      <div className="w-full max-w-2xl px-2 sm:px-0"> {/* Added padding for very small screens */}
+      <div className="w-full max-w-2xl"> {/* Removed px-2 sm:px-0 here */}
         <CameraView />
       </div>
       <footer className="mt-6 sm:mt-8 text-center text-xs sm:text-sm text-muted-foreground">
