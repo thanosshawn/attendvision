@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -17,7 +18,7 @@ export default function AttendancePage() {
     <div className="container mx-auto py-8 px-4 md:px-6 lg:px-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2 font-headline text-primary">Attendance System</h1>
-        <p className="text-muted-foreground">Mark attendance using real-time face recognition or manual entry.</p>
+        <p className="text-muted-foreground">Employee attendance relies on face recognition. Manual entry is an option for administrators.</p>
       </div>
 
       <Tabs defaultValue="real-time" className="w-full">
